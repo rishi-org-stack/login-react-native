@@ -6,21 +6,15 @@ import {
   View,
   TextInput, TouchableOpacity
 } from 'react-native';
-import Input from '../components/InputBox'
-import Button from '../components/Button'
-import {Validate} from '../data/user';
-import {connect} from 'react-redux';
-import {make} from '../util/util';
 
-const change = (state, data) => {
-  state.name = data.name
-  state.email = data.email
-}
-function Login(props) {
+import {Adduser} from '../data/user'
+import {connect} from 'react-redux';
+import {make} from "../util/util";
+
+function Register(props) {
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  // console.log(props);
   return (
     <View style={styles.container}>
 
@@ -43,7 +37,6 @@ function Login(props) {
         <TextInput
           style={styles.input}
           onChangeText ={text=>{setEmail(text)}}
-
           >
           <Text style={
             styles.text
@@ -60,16 +53,18 @@ function Login(props) {
           onPress={() => {let data ={
             name:make(name),
             email:make(email)
-          };
-          if (Validate(data)){
+          };if(Adduser(data) ==="ok"){
+            props.navigation.navigate('Login');
+          };if(Adduser(data) ==='already present'){
             props.changeIt(data);
             props.navigation.navigate('Info');
-          }; }}
+          }; 
+          }}
         >
           <Text
             style={styles.buttontext}
           >
-            login
+            Register
           </Text>
         </TouchableOpacity>
 
@@ -86,7 +81,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   box: {
-    backgroundColor: "blue",
+    backgroundColor: "red",
     width: 330,
     height: 55,
     marginLeft: 37,
@@ -123,11 +118,13 @@ const styles = StyleSheet.create({
   }
 
 });
+
 const mapDispatchToProps =(dispatch)=>{
   return{
-    changeIt :(name) =>{
-      dispatch({type:"CHANGE_IT",payload:name})
+    changeIt :(data) =>{
+      dispatch({type:"CHANGE_IT",payload:data})
     }
   }
 }
-export default connect(null,mapDispatchToProps)(Login);
+
+export default connect(null,mapDispatchToProps)(Register);
